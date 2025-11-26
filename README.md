@@ -1,52 +1,46 @@
-# Redmine MySQL Backup & Rotation Script  
-複数の Redmine（MySQL）インスタンスを運用する環境向けに、  
-Podman コンテナ内の DB を自動でダンプ取得し、世代管理（ローテーション）まで行うサンプルスクリプトです。
+# Redmine MySQL Backup & Rotation Script
 
-実務では、Redmine を複数テナント運用しているケースや、  
-Podman/Docker で Redmine + DB を個別に構築している環境で使用することを想定しています。
+This script is designed for environments running multiple Redmine (MySQL) instances.  
+It automatically performs database dumps from MySQL containers running under Podman and handles backup rotation for each instance.
 
----
-
-## ■ 機能概要
-
-- BASE_DIR 配下の各 Redmine インスタンスを自動走査  
-- 対応する MySQL コンテナへ `mysqldump` を実行  
-- ダンプを gzip 圧縮して保存  
-- 指定した世代数でローテーション  
-- pipefail によるエラー検知  
-- インスタンスごとにログを残す仕組みを備えた、運用向けスクリプト
+It is intended for multi-tenant Redmine setups, or environments where Redmine and MySQL/MariaDB containers are managed individually via Podman or Docker.
 
 ---
 
-## ■ スクリプト名
+## ■ Overview
 
-`backup_redmine_mysql_multi.sh`
+- Automatically scans all Redmine instances under `BASE_DIR`  
+- Executes `mysqldump` against the corresponding MySQL container  
+- Compresses dump files with gzip  
+- Rotates backups based on a specified number of generations  
+- Uses `pipefail` for proper error detection  
+- Saves logs per instance, suitable for operational environments  
 
 ---
 
-## ■ 想定環境
+## ■ Script Name
 
-- Linux (CentOS / Rocky / Ubuntu など)
+
+---
+
+## ■ Requirements
+
+- Linux (CentOS / Rocky / Ubuntu, etc.)
 - Podman  
-- Redmine（Rails）
-- MySQL / MariaDB
-- Shell (bash)
+- Redmine (Rails)  
+- MySQL or MariaDB  
+- Bash shell  
 
 ---
 
-## ■ ディレクトリ構成例
+## ■ Directory Structure Example
+
+Edit the required variables such as `BASE_DIR` at the top of the script to match your environment.
+
+Example:
+
+
+The script will automatically perform database backups and rotate them for each Redmine instance detected under `BASE_DIR`.
 
 
 
-
-2. BASE_DIR など必要な設定を編集  
-スクリプト先頭周辺にある定数を環境に合わせて変更してください。
-
-例：
-
-```bash
-BASE_DIR=/opt/redmine_podman/
-GEN=10
-
-
-./backup_redmine_mysql_multi.sh
